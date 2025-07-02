@@ -1,4 +1,5 @@
 import { StringValueObject } from '../../shared/domain/value-object/string';
+import { EmailValidator } from '../../shared/domain/EmailValidator';
 
 export class UserEmail extends StringValueObject {
   constructor(value: string) {
@@ -7,9 +8,9 @@ export class UserEmail extends StringValueObject {
   }
 
   private ensureValidEmail(value: string): void {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(value)) {
+    if (!EmailValidator.isValid(value)) {
       throw new Error('Invalid email format');
     }
   }
 }
+ 

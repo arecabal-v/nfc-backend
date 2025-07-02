@@ -1,6 +1,6 @@
 services:
-  Apps.auth.controllers.RegisterController:
-    class: "@app/controllers/auth/RegisterController"
+  Apps.auth.controllers.PostRegisterController:
+    class: "@app/controllers/auth/PostRegisterController"
     arguments: ["@Shared.Domain.CommandBus"]
 
   Apps.auth.UserRegistrator:
@@ -14,5 +14,5 @@ services:
       - { name: "commandHandler" }
 
   Apps.auth.UserMongoRepository:
-    class: "@contexts/auth/infrastructure/repository/persistance/UserMongoRepository"
+    class: "@contexts/auth/infrastructure/persistance/mongodb/UserMongoRepository"
     arguments: ["@Shared.Mongo.Connection.Manager.NFC"]

@@ -28,3 +28,34 @@ Content-Type: {{contentType}}
 }
 
 ###
+
+### ========================================
+### NFC ENDPOINTS
+### ========================================
+
+### Post NFC Data
+POST {{baseUrl}}/nfc/data
+Content-Type: {{contentType}}
+
+{
+  "userId": "123e4567-e89b-12d3-a456-426614174000",
+  "serialNumber": "NFC001234567890",
+  "contactInfo": [
+    {
+      "type": "tutor",
+      "name": "María García",
+      "phone": "+34612345678",
+      "email": "maria.garcia@colegio.edu",
+      "company": "Colegio San José",
+      "position": "Tutora de 5º Primaria"
+    },
+    {
+      "type": "father",
+      "name": "Carlos Pérez",
+      "phone": "+34698765432",
+      "email": "carlos.perez@gmail.com"
+    }
+  ]
+}
+
+###

@@ -1,0 +1,18 @@
+services:
+  Apps.nfc.controllers.PostNfcDataController:
+    class: "@app/controllers/nfc/PostNfcDataController"
+    arguments: ["@Shared.Domain.CommandBus"]
+
+  Apps.nfc.NfcRepository:
+    class: "@contexts/nfc/infrastructure/persistence/mongodb/NfcMongoRepository"
+    arguments: ["@Shared.Mongo.Connection.Manager.NFC"]
+
+  Apps.nfc.NfcDataCreator:
+    class: "@contexts/nfc/application/NfcDataCreator"
+    arguments: ["@Apps.nfc.NfcRepository"]
+
+  Apps.nfc.NfcDataCreatorCommandHandler:
+    class: "@contexts/nfc/application/NfcDataCreatorCommandHandler"
+    arguments: ["@Apps.nfc.NfcDataCreator"]
+    tags:
+      - { name: "commandHandler" }

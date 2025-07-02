@@ -1,11 +1,11 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import container from '@app/dependency-injection';
-import RegisterController from '@app/controllers/auth/RegisterController';
+import PostRegisterController from '@app/controllers/auth/PostRegisterController';
 
 export const register = (router: Router) => {
-  const registerController: RegisterController = container.get('Apps.auth.controllers.RegisterController');
+  const postRegisterController: PostRegisterController = container.get('Apps.auth.controllers.PostRegisterController');
 
   router.post('/auth/register', (req: Request, res: Response, next: NextFunction) => {
-    return registerController.run(req, res, next);
+    return postRegisterController.run(req, res, next);
   });
 };

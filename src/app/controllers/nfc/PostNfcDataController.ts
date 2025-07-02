@@ -2,24 +2,24 @@ import { Request, Response, NextFunction } from 'express';
 import httpStatus from 'http-status';
 import { BaseController } from '@app/controllers/BaseController';
 import { CommandBus } from '@contexts/shared/domain/cqrs/CommandBus';
-import { RegisterUserCommand } from '@contexts/auth/domain/RegisterUserCommand';
+import { NfcDataCreatorCommand } from '@contexts/nfc/domain/NfcDataCreatorCommand';
 
-export default class RegisterController implements BaseController {
+export default class PostNfcDataController implements BaseController {
   constructor(private readonly commandBus: CommandBus) {}
 
   async run(req: Request, res: Response, _next: NextFunction): Promise<void> {
-    const { email, password, name } = req.body;
+    const { userId, serialNumber, contactInfo } = req.body;
 
-    const command = new RegisterUserCommand(
-        email,
-        password,
-        name,
+    const command = new NfcDataCreatorCommand(
+        userId,
+        serialNumber,
+        contactInfo,
     );
 
     await this.commandBus.dispatch(command);
 
     res.status(httpStatus.CREATED).json({
-      message: 'User registered successfully',
+      message: 'NFC data programmed successfully',
     });
   }
 }

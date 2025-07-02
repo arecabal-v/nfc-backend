@@ -7,7 +7,7 @@ import { UserEmail } from '../domain/UserEmail';
 import { UserPassword } from '../domain/UserPassword';
 import { UserName } from '../domain/UserName';
 import { User } from '../domain/User';
-import { UserId } from '../domain/UserId';
+import { UserId } from '@contexts/shared/domain/UserId';
 
 export class RegisterUserCommandHandler implements CommandHandler<RegisterUserCommand> {
   constructor(private readonly userRegistrator: UserRegistrator) {}

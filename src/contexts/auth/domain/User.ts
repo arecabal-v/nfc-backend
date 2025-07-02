@@ -1,5 +1,5 @@
 import { AggregateRoot } from '../../shared/domain/AggregateRoot';
-import { UserId } from './UserId';
+import { UserId } from '../../shared/domain/UserId';
 import { UserEmail } from './UserEmail';
 import { UserPassword } from './UserPassword';
 import { UserName } from './UserName';
@@ -61,3 +61,4 @@ export class User extends AggregateRoot {
     };
   }
 }
+ 
