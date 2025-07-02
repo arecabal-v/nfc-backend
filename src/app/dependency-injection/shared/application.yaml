@@ -1,0 +1,19 @@
+services:
+  Shared.Logger:
+    class: ../../../contexts/shared/infrastructure/logger/WinstonLogger
+    arguments: []
+
+  Shared.CommandHandlers:
+    class: ../../../contexts/shared/infrastructure/command-bus/CommandHandlers
+    arguments: ["!tagged commandHandler"]
+  Shared.Domain.CommandBus:
+    class: "../../../contexts/shared/infrastructure/command-bus/InMemoryCommandBus"
+    arguments: ["@Shared.CommandHandlers"]
+
+  Shared.QueryHandlers:
+    class: ../../../contexts/shared/infrastructure/query-bus/QueryHandlers
+    arguments: ["!tagged queryHandler"]
+
+  Shared.Domain.QueryBus:
+    class: ../../../contexts/shared/infrastructure/query-bus/InMemoryQueryBus
+    arguments: ["@Shared.QueryHandlers"]
