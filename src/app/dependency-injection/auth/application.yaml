@@ -1,7 +1,7 @@
 services:
   Apps.auth.controllers.PostRegisterController:
     class: "@app/controllers/auth/PostRegisterController"
-    arguments: ["@Shared.Domain.CommandBus"]
+    arguments: ["@Shared.Domain.CommandBus", "@Shared.Domain.QueryBus"]
 
   Apps.auth.UserRegistrator:
     class: "@contexts/auth/application/UserRegistrator"
@@ -12,6 +12,12 @@ services:
     arguments: ["@Apps.auth.UserRegistrator"]
     tags:
       - { name: "commandHandler" }
+
+  Apps.auth.GenerateTokenQueryHandler:
+    class: "@contexts/auth/application/GenerateTokenQueryHandler"
+    arguments: ["@Shared.Domain.JwtService"]
+    tags:
+      - { name: "queryHandler" }
 
   Apps.auth.UserMongoRepository:
     class: "@contexts/auth/infrastructure/persistance/mongodb/UserMongoRepository"

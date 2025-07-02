@@ -1,4 +1,3 @@
-
 import { Command } from '@contexts/shared/domain/cqrs/Command';
 import { CommandHandler } from '../../shared/domain/cqrs/CommandHandler';
 import { RegisterUserCommand } from '../domain/RegisterUserCommand';
@@ -17,7 +16,7 @@ export class RegisterUserCommandHandler implements CommandHandler<RegisterUserCo
   }
 
   async handle(command: RegisterUserCommand): Promise<void> {
-    const id = UserId.random();
+    const id = new UserId(command.userId);
     const email = new UserEmail(command.email);
     const password = new UserPassword(command.password);
     const name = new UserName(command.name);

@@ -1,13 +1,14 @@
 # 🏷️ NFC Backend - Sistema de Correas Personalizadas
 
-Backend para un sistema de venta de correas con chips NFC personalizables. Permite a los usuarios registrarse, programar datos en sus chips NFC y gestionar la información almacenada.
+Backend para un sistema de venta de correas con chips NFC personalizables. Permite a los usuarios registrarse, programar datos en sus chips NFC y gestionar la información almacenada con autenticación JWT.
 
 ## 🎯 **Concepto del Negocio**
 
 1. **Cliente compra correa** con chip NFC integrado
 2. **Se registra en la aplicación** con sus datos personales
-3. **Programa datos personalizados** en el chip NFC
-4. **Solo el propietario** puede modificar los datos de su chip
+3. **Recibe tokens JWT** para autenticación segura
+4. **Programa datos personalizados** en el chip NFC
+5. **Solo el propietario** puede modificar los datos de su chip
 
 ### **Casos de Uso Típicos**
 
@@ -23,6 +24,7 @@ Backend para un sistema de venta de correas con chips NFC personalizables. Permi
 - **TypeScript** con tipado estricto
 - **Express.js** como framework web
 - **MongoDB** para persistencia
+- **JWT Authentication** con access/refresh tokens
 - **Inyección de Dependencias** con `node-dependency-injection`
 
 ### **Estructura de Contextos**
@@ -51,22 +53,19 @@ npm install
 
 ### **3. Configurar variables de entorno**
 
-```bash
-cp .env.example .env
-```
-
-Edita el archivo `.env` con tus configuraciones:
+Crea un archivo `.env` en la raíz del proyecto:
 
 ```env
+# JWT Configuration
+JWT_SECRET=your-super-secret-jwt-key-change-in-production
+
+# MongoDB Configuration
+MONGO_URL=mongodb://admin:password@localhost:27017
+MONGO_DATABASE=nfc-backend
+
 # Server Configuration
 PORT=3000
 ENVIRONMENT=DEVELOP
-
-# MongoDB Configuration
-MONGO_ROOT_USERNAME=admin
-MONGO_ROOT_PASSWORD=tu_password_seguro
-MONGO_DATABASE=nfc-backend
-MONGO_URL=mongodb://admin:tu_password_seguro@localhost:27017/nfc-backend?authSource=admin
 ```
 
 ### **4. Iniciar MongoDB con Docker**
@@ -121,9 +120,16 @@ Content-Type: application/json
 
 ```json
 {
-  "message": "User registered successfully"
+  "message": "User registered successfully",
+  "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
 }
 ```
+
+#### **Información de Tokens JWT**
+
+- **Access Token**: Válido por **24 horas**, usado para autenticar requests
+- **Refresh Token**: Válido por **30 días**, usado para renovar access tokens
 
 ### **🏷️ NFC Data**
 
@@ -132,6 +138,7 @@ Content-Type: application/json
 ```http
 POST /api/v1/nfc/data
 Content-Type: application/json
+Authorization: Bearer <access_token>
 
 {
   "userId": "123e4567-e89b-12d3-a456-426614174000",
@@ -211,11 +218,15 @@ curl -X POST http://localhost:3000/api/v1/auth/register \
   }'
 ```
 
-**Programar datos NFC:**
+**Programar datos NFC (con token):**
 
 ```bash
+# Primero registra un usuario y obtén el accessToken
+ACCESS_TOKEN="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+
 curl -X POST http://localhost:3000/api/v1/nfc/data \
   -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
   -d '{
     "userId": "123e4567-e89b-12d3-a456-426614174000",
     "serialNumber": "NFC001234567890",
@@ -254,7 +265,12 @@ nfc-backend/
 │   │   └── server/            # Configuración del servidor
 │   └── contexts/              # Contextos de dominio
 │       ├── shared/            # Código compartido
+│       │   ├── domain/        # Entidades y servicios compartidos
+│       │   │   └── jwt/       # Servicio JWT
+│       │   └── infrastructure/ # Implementaciones JWT
 │       ├── auth/              # Contexto de autenticación
+│       │   ├── domain/        # Entidades de usuario
+│       │   └── application/   # Casos de uso y queries
 │       └── nfc/               # Contexto de NFC
 ├── docker-compose.yml         # MongoDB con Docker
 ├── requests.http             # Ejemplos de API
@@ -267,17 +283,48 @@ nfc-backend/
 - ✅ **Hashing de contraseñas** con crypto nativo
 - ✅ **Validación de emails** centralizada
 - ✅ **Variables de entorno** para secretos
-- ⚠️ **Autenticación JWT** (pendiente implementar)
-- ⚠️ **Autorización** (pendiente implementar)
+- ✅ **Autenticación JWT** con access/refresh tokens
+- ✅ **Separación CQRS** para comandos y queries
+- ⚠️ **Autorización por usuario** (pendiente implementar)
+- ⚠️ **Middleware de autenticación** (pendiente implementar)
+
+## 🔑 **Sistema de Autenticación JWT**
+
+### **Flujo de Autenticación**
+
+1. **Registro**: Usuario se registra → Recibe access + refresh tokens
+2. **Autenticación**: Cliente incluye access token en header `Authorization: Bearer <token>`
+3. **Renovación**: Cuando access token expira, usar refresh token para obtener nuevos tokens
+
+### **Configuración JWT**
+
+- **Access Token**: 24 horas de validez
+- **Refresh Token**: 30 días de validez
+- **Algoritmo**: HS256
+- **Secret**: Configurable via `JWT_SECRET` en `.env`
+
+### **Payload del Token**
+
+```json
+{
+  "userId": "uuid-del-usuario",
+  "email": "usuario@ejemplo.com",
+  "name": "Nombre Usuario",
+  "iat": 1234567890,
+  "exp": 1234567890
+}
+```
 
 ## 🚧 **Próximas Funcionalidades**
 
-- [ ] Autenticación JWT
+- [ ] Middleware de autenticación JWT
+- [ ] Endpoint para renovar tokens
 - [ ] Autorización por usuario
 - [ ] Actualización de datos NFC
 - [ ] Consulta de datos NFC
 - [ ] Gestión de múltiples tags por usuario
 - [ ] API para lectura desde dispositivos NFC
+- [ ] Logout y revocación de tokens
 
 ## 🤝 **Contribuir**
 

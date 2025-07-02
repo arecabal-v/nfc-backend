@@ -19,4 +19,7 @@ export default {
       },
     ],
   },
+  JWT: {
+    SECRET: env('JWT_SECRET') || 'default-secret-key-change-in-production',
+  },
 };

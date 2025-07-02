@@ -3,6 +3,10 @@
 @apiVersion = v1
 @contentType = application/json
 
+# Ejemplo de tokens JWT (reemplaza con tokens reales después del registro)
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.ejemplo
+@refreshToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.ejemplo
+
 ### ========================================
 ### HEALTH ENDPOINTS
 ### ========================================
@@ -17,7 +21,7 @@ Content-Type: {{contentType}}
 ### AUTH ENDPOINTS
 ### ========================================
 
-### Register User
+### Register User - Devuelve access y refresh tokens
 POST {{baseUrl}}/auth/register
 Content-Type: {{contentType}}
 
@@ -27,15 +31,35 @@ Content-Type: {{contentType}}
   "name": "Juan Pérez"
 }
 
+# Respuesta esperada:
+# {
+#   "message": "User registered successfully",
+#   "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+#   "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+# }
+
+###
+
+### Register Another User for Testing
+POST {{baseUrl}}/auth/register
+Content-Type: {{contentType}}
+
+{
+  "email": "test@example.com",
+  "password": "password123",
+  "name": "Test User"
+}
+
 ###
 
 ### ========================================
 ### NFC ENDPOINTS
 ### ========================================
 
-### Post NFC Data
+### Post NFC Data - Requiere autenticación JWT
 POST {{baseUrl}}/nfc/data
 Content-Type: {{contentType}}
+Authorization: Bearer {{accessToken}}
 
 {
   "userId": "123e4567-e89b-12d3-a456-426614174000",
@@ -59,3 +83,44 @@ Content-Type: {{contentType}}
 }
 
 ###
+
+### Post NFC Data - Ejemplo con un solo contacto
+POST {{baseUrl}}/nfc/data
+Content-Type: {{contentType}}
+Authorization: Bearer {{accessToken}}
+
+{
+  "userId": "456e7890-e89b-12d3-a456-426614174001",
+  "serialNumber": "NFC987654321",
+  "contactInfo": [
+    {
+      "type": "mother",
+      "name": "Ana López",
+      "phone": "+34600123456",
+      "email": "ana.lopez@gmail.com",
+      "company": "Freelance",
+      "position": "Diseñadora Gráfica"
+    }
+  ]
+}
+
+###
+
+### ========================================
+### NOTAS DE USO
+### ========================================
+
+# 1. Primero ejecuta el endpoint de registro para obtener los tokens
+# 2. Copia el accessToken de la respuesta
+# 3. Reemplaza la variable @accessToken al inicio del archivo
+# 4. Ahora puedes usar los endpoints de NFC que requieren autenticación
+# 
+# Configuración de tokens:
+# - Access Token: válido por 24 horas
+# - Refresh Token: válido por 30 días
+#
+# Tipos de contacto disponibles:
+# - "tutor": Tutor/Profesor
+# - "father": Padre  
+# - "mother": Madre
+# - "other": Otro

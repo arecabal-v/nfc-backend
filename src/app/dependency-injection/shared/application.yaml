@@ -29,3 +29,11 @@ services:
       class: ../../../contexts/shared/infrastructure/persistance/mongo/MongoClientFactory
       method: "createClient"
     arguments: ["nfc-backend", "@Shared.Mongo.Config.NFC"]
+
+  Shared.Domain.JwtService:
+    class: ../../../contexts/shared/infrastructure/jwt/JsonWebTokenService
+    arguments: ["%jwt.secret%"]
+
+  Shared.AuthMiddleware:
+    class: ../../../app/middlewares/AuthMiddleware
+    arguments: ["@Shared.Domain.JwtService"]
