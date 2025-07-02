@@ -17,3 +17,15 @@ services:
   Shared.Domain.QueryBus:
     class: ../../../contexts/shared/infrastructure/query-bus/InMemoryQueryBus
     arguments: ["@Shared.QueryHandlers"]
+
+  Shared.Mongo.Config.NFC:
+    factory:
+      class: ../../../contexts/shared/infrastructure/persistance/mongo/MongoConfigFactory
+      method: "createConfig"
+    arguments: ["nfc-backend"]
+
+  Shared.Mongo.Connection.Manager.NFC:
+    factory:
+      class: ../../../contexts/shared/infrastructure/persistance/mongo/MongoClientFactory
+      method: "createClient"
+    arguments: ["nfc-backend", "@Shared.Mongo.Config.NFC"]

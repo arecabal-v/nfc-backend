@@ -1,4 +1,4 @@
-import { Nullable } from '@context/shared/domain/Nullable';
+import { Nullable } from '@contexts/shared/domain/Nullable';
 import { MongoClient } from 'mongodb';
 import MongoConfig from './MongoConfig';
 

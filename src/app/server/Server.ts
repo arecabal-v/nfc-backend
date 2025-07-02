@@ -28,8 +28,8 @@ export class Server {
     this.app.use(helmet.frameguard({ action: 'deny' }));
 
     const router = Router();
-    this.app.use(router, ErrorHandlerResponse);
-    this.app.use(router);
+    this.app.use('/api/v1', router, ErrorHandlerResponse);
+    this.app.use('/api/v1', router);
     registerRoutes(router);
     this.app.use(RouteErrorHandlerResponse);
   }

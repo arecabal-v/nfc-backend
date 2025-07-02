@@ -11,12 +11,12 @@ export default {
     ERROR: 'error',
     INFO: 'info',
   },
-  // MONGO: {
-  //   CONNECTIONS: [
-  //     {
-  //       URL: env('MONGO_TEMPLATE') ?? 'mongodb://localhost:27017/starwars',
-  //       DATABASE: 'typesctipt-backend-starwars',
-  //     },
-  //   ],
-  // },
+  MONGO: {
+    CONNECTIONS: [
+      {
+        URL: env('MONGO_URL') || '',
+        DATABASE: env('MONGO_DATABASE') || 'nfc-backend',
+      },
+    ],
+  },
 };

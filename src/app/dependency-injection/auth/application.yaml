@@ -1,0 +1,18 @@
+services:
+  Apps.auth.controllers.RegisterController:
+    class: "@app/controllers/auth/RegisterController"
+    arguments: ["@Shared.Domain.CommandBus"]
+
+  Apps.auth.UserRegistrator:
+    class: "@contexts/auth/application/UserRegistrator"
+    arguments: ["@Apps.auth.UserMongoRepository"]
+
+  Apps.auth.RegisterUserCommandHandler:
+    class: "@contexts/auth/application/RegisterUserCommandHandler"
+    arguments: ["@Apps.auth.UserRegistrator"]
+    tags:
+      - { name: "commandHandler" }
+
+  Apps.auth.UserMongoRepository:
+    class: "@contexts/auth/infrastructure/repository/persistance/UserMongoRepository"
+    arguments: ["@Shared.Mongo.Connection.Manager.NFC"]
