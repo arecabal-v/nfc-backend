@@ -113,6 +113,37 @@ Authorization: Bearer {{accessToken}}
 
 ###
 
+### Get NFC Tag by ID - Requiere autenticación JWT
+GET {{baseUrl}}/nfc/tag/123e4567-e89b-12d3-a456-426614174000
+Content-Type: {{contentType}}
+Authorization: Bearer {{accessToken}}
+
+# Respuesta esperada:
+# {
+#   "data": {
+#     "id": "123e4567-e89b-12d3-a456-426614174000",
+#     "userId": "123e4567-e89b-12d3-a456-426614174000",
+#     "serialNumber": "NFC001234567890",
+#     "nfcData": {
+#       "contactInfo": [
+#         {
+#           "type": "tutor",
+#           "name": "María García",
+#           "phone": "+34612345678",
+#           "email": "maria.garcia@colegio.edu",
+#           "company": "Colegio San José",
+#           "position": "Tutora de 5º Primaria"
+#         }
+#       ]
+#     },
+#     "isActive": true,
+#     "createdAt": "2024-01-01T10:00:00.000Z",
+#     "updatedAt": "2024-01-01T10:00:00.000Z"
+#   }
+# }
+
+###
+
 ### Post NFC Data - Ejemplo con un solo contacto
 POST {{baseUrl}}/nfc/data
 Content-Type: {{contentType}}

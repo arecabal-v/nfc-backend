@@ -16,6 +16,10 @@ interface UserDocument {
 }
 
 export class UserMongoRepository extends MongoRepository<User> implements UserRepository {
+  protected moduleName(): string {
+    return 'users';
+  }
+
   async save(user: User): Promise<void> {
     await this.persist(user.id.value, user);
   }
@@ -36,9 +40,5 @@ export class UserMongoRepository extends MongoRepository<User> implements UserRe
     const name = new UserName(document.name);
 
     return User.create(id, email, password, name);
-  }
-
-  protected moduleName(): string {
-    return 'users';
   }
 }
