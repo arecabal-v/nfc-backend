@@ -7,6 +7,14 @@ services:
     class: "@app/controllers/nfc/GetNfcTagController"
     arguments: ["@Shared.Domain.QueryBus"]
 
+  Apps.nfc.controllers.GetNfcTagsByUserController:
+    class: "@app/controllers/nfc/GetNfcTagsByUserController"
+    arguments: ["@Shared.Domain.QueryBus"]
+
+  Apps.nfc.controllers.GetPublicNfcTagController:
+    class: "@app/controllers/nfc/GetPublicNfcTagController"
+    arguments: ["@Shared.Domain.QueryBus"]
+
   Apps.nfc.NfcRepository:
     class: "@contexts/nfc/infrastructure/persistence/mongodb/NfcMongoRepository"
     arguments: ["@Shared.Mongo.Connection.Manager.NFC"]
@@ -19,6 +27,14 @@ services:
     class: "@contexts/nfc/application/cases/NfcDataGetter"
     arguments: ["@Apps.nfc.NfcRepository"]
 
+  Apps.nfc.NfcTagsByUserGetter:
+    class: "@contexts/nfc/application/cases/NfcTagsByUserGetter"
+    arguments: ["@Apps.nfc.NfcRepository"]
+
+  Apps.nfc.PublicNfcTagGetter:
+    class: "@contexts/nfc/application/cases/PublicNfcTagGetter"
+    arguments: ["@Apps.nfc.NfcRepository"]
+
   Apps.nfc.NfcDataCreatorCommandHandler:
     class: "@contexts/nfc/application/commands/NfcDataCreatorCommandHandler"
     arguments: ["@Apps.nfc.NfcDataCreator"]
@@ -28,5 +44,17 @@ services:
   Apps.nfc.GetNfcTagByIdQueryHandler:
     class: "@contexts/nfc/application/queries/GetNfcTagByIdQueryHandler"
     arguments: ["@Apps.nfc.NfcDataGetter"]
+    tags:
+      - { name: "queryHandler" }
+
+  Apps.nfc.GetNfcTagsByUserIdQueryHandler:
+    class: "@contexts/nfc/application/queries/GetNfcTagsByUserIdQueryHandler"
+    arguments: ["@Apps.nfc.NfcTagsByUserGetter"]
+    tags:
+      - { name: "queryHandler" }
+
+  Apps.nfc.GetPublicNfcTagBySerialNumberQueryHandler:
+    class: "@contexts/nfc/application/queries/GetPublicNfcTagBySerialNumberQueryHandler"
+    arguments: ["@Apps.nfc.PublicNfcTagGetter"]
     tags:
       - { name: "queryHandler" }

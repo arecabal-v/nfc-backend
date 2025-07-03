@@ -144,6 +144,54 @@ Authorization: Bearer {{accessToken}}
 
 ###
 
+### Get NFC Tags by User ID - Requiere autenticación JWT
+GET {{baseUrl}}/nfc/tags/user/123e4567-e89b-12d3-a456-426614174000
+Content-Type: {{contentType}}
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzZGU4MWFmMy00NDQ4LTRmNDgtYTdkOS03NTcyZTBhN2IyNzciLCJlbWFpbCI6InVzdWFyaW9AZWplbXBsby5jb20iLCJuYW1lIjoiSnVhbiBQw6lyZXoiLCJpYXQiOjE3NTE1Nzg0NDUsImV4cCI6MTc1MTY2NDg0NX0.1dabwRr8rKMLK1bUM3PliGK_1wHcCbpK-6eu4nmRyyU
+
+# Respuesta esperada:
+# {
+#   "nfcTags": [
+#     {
+#       "id": "123e4567-e89b-12d3-a456-426614174000",
+#       "serialNumber": "NFC001234567890"
+#     },
+#     {
+#       "id": "456e7890-e89b-12d3-a456-426614174001",
+#       "serialNumber": "NFC987654321"
+#     }
+#   ]
+# }
+
+###
+
+### Get Public NFC Tag - No requiere autenticación
+GET {{baseUrl}}/nfc/public/NFC001234567890
+Content-Type: {{contentType}}
+
+# Respuesta esperada:
+# {
+#   "serialNumber": "NFC001234567890",
+#   "contactInfo": [
+#     {
+#       "type": "tutor",
+#       "name": "María García",
+#       "phone": "+34612345678",
+#       "email": "maria.garcia@colegio.edu",
+#       "company": "Colegio San José",
+#       "position": "Tutora de 5º Primaria"
+#     },
+#     {
+#       "type": "father",
+#       "name": "Carlos Pérez",
+#       "phone": "+34698765432",
+#       "email": "carlos.perez@gmail.com"
+#     }
+#   ]
+# }
+
+###
+
 ### Post NFC Data - Ejemplo con un solo contacto
 POST {{baseUrl}}/nfc/data
 Content-Type: {{contentType}}

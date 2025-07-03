@@ -6,6 +6,6 @@ export class NfcDataGetter {
   constructor(private readonly nfcRepository: NfcRepository) {}
 
   async execute(id: NfcTagId): Promise<NfcTag | null> {
-    return this.nfcRepository.findById(id);
+    return this.nfcRepository.search(id);
   }
 }
