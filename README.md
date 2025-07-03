@@ -1,6 +1,6 @@
 # 🏷️ NFC Backend - Sistema de Correas Personalizadas
 
-Backend para un sistema de venta de correas con chips NFC personalizables. Permite a los usuarios registrarse, programar datos en sus chips NFC y gestionar la información almacenada con autenticación JWT.
+Backend para un sistema de venta de correas con chips NFC personalizables. Permite a los usuarios registrarse, programar datos en sus chips NFC y gestionar la información almacenada con autenticación JWT. Además, proporciona un endpoint público para acceder a la información de contacto en caso de emergencia.
 
 ## 🎯 **Concepto del Negocio**
 
@@ -9,6 +9,7 @@ Backend para un sistema de venta de correas con chips NFC personalizables. Permi
 3. **Recibe tokens JWT** para autenticación segura
 4. **Programa datos personalizados** en el chip NFC
 5. **Solo el propietario** puede modificar los datos de su chip
+6. **Cualquier persona** puede leer la información de contacto escaneando el NFC
 
 ### **Casos de Uso Típicos**
 
@@ -16,6 +17,7 @@ Backend para un sistema de venta de correas con chips NFC personalizables. Permi
 - 🏢 **Datos profesionales** (empresa, cargo)
 - 📧 **Contactos de emergencia**
 - 🔗 **Enlaces personalizados**
+- 🆘 **Acceso rápido a contactos** en caso de emergencia
 
 ## 🏗️ **Arquitectura**
 
@@ -170,6 +172,39 @@ Authorization: Bearer <access_token>
 }
 ```
 
+#### **Obtener Información Pública del NFC**
+
+```http
+GET /api/v1/nfc/public/{serialNumber}
+Content-Type: application/json
+
+# No requiere autenticación
+```
+
+**Respuesta exitosa (200):**
+
+```json
+{
+  "serialNumber": "NFC001234567890",
+  "contactInfo": [
+    {
+      "type": "tutor",
+      "name": "María García",
+      "phone": "+34612345678",
+      "email": "maria.garcia@colegio.edu",
+      "company": "Colegio San José",
+      "position": "Tutora de 5º Primaria"
+    },
+    {
+      "type": "father",
+      "name": "Carlos Pérez",
+      "phone": "+34698765432",
+      "email": "carlos.perez@gmail.com"
+    }
+  ]
+}
+```
+
 #### **Tipos de Contacto Disponibles**
 
 - `tutor` - Tutor/Profesor
@@ -241,6 +276,13 @@ curl -X POST http://localhost:3000/api/v1/nfc/data \
   }'
 ```
 
+**Obtener información pública del NFC:**
+
+```bash
+curl -X GET http://localhost:3000/api/v1/nfc/public/NFC001234567890 \
+  -H "Content-Type: application/json"
+```
+
 ## 🛠️ **Desarrollo**
 
 ### **Scripts Disponibles**
@@ -248,9 +290,6 @@ curl -X POST http://localhost:3000/api/v1/nfc/data \
 ```bash
 npm run dev          # Servidor en modo desarrollo
 npm run build        # Compilar para producción
-npm run start        # Iniciar servidor compilado
-npm run eslint       # Linter
-npm run test:unit    # Tests unitarios
 ```
 
 ### **Estructura del Proyecto**
@@ -285,8 +324,8 @@ nfc-backend/
 - ✅ **Variables de entorno** para secretos
 - ✅ **Autenticación JWT** con access/refresh tokens
 - ✅ **Separación CQRS** para comandos y queries
+- ✅ **Endpoint público** para información de emergencia
 - ⚠️ **Autorización por usuario** (pendiente implementar)
-- ⚠️ **Middleware de autenticación** (pendiente implementar)
 
 ## 🔑 **Sistema de Autenticación JWT**
 
@@ -317,13 +356,10 @@ nfc-backend/
 
 ## 🚧 **Próximas Funcionalidades**
 
-- [ ] Middleware de autenticación JWT
 - [ ] Endpoint para renovar tokens
 - [ ] Autorización por usuario
 - [ ] Actualización de datos NFC
-- [ ] Consulta de datos NFC
 - [ ] Gestión de múltiples tags por usuario
-- [ ] API para lectura desde dispositivos NFC
 - [ ] Logout y revocación de tokens
 
 ## 🤝 **Contribuir**
