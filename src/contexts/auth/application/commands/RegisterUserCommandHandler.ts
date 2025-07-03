@@ -1,12 +1,12 @@
+import { RegisterUserCommand } from '@contexts/auth/domain/RegisterUserCommand';
 import { Command } from '@contexts/shared/domain/cqrs/Command';
-import { CommandHandler } from '../../shared/domain/cqrs/CommandHandler';
-import { RegisterUserCommand } from '../domain/RegisterUserCommand';
-import { UserRegistrator } from './UserRegistrator';
-import { UserEmail } from '../domain/UserEmail';
-import { UserPassword } from '../domain/UserPassword';
-import { UserName } from '../domain/UserName';
-import { User } from '../domain/User';
+import { CommandHandler } from '@contexts/shared/domain/cqrs/CommandHandler';
 import { UserId } from '@contexts/shared/domain/UserId';
+import { UserRegistrator } from '../cases/UserRegistrator';
+import { UserEmail } from '@contexts/auth/domain/UserEmail';
+import { UserPassword } from '@contexts/auth/domain/UserPassword';
+import { UserName } from '@contexts/auth/domain/UserName';
+import { User } from '@contexts/auth/domain/User';
 
 export class RegisterUserCommandHandler implements CommandHandler<RegisterUserCommand> {
   constructor(private readonly userRegistrator: UserRegistrator) {}

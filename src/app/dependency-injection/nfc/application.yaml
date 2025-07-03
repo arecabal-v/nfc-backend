@@ -8,11 +8,11 @@ services:
     arguments: ["@Shared.Mongo.Connection.Manager.NFC"]
 
   Apps.nfc.NfcDataCreator:
-    class: "@contexts/nfc/application/NfcDataCreator"
+    class: "@contexts/nfc/application/cases/NfcDataCreator"
     arguments: ["@Apps.nfc.NfcRepository"]
 
   Apps.nfc.NfcDataCreatorCommandHandler:
-    class: "@contexts/nfc/application/NfcDataCreatorCommandHandler"
+    class: "@contexts/nfc/application/commands/NfcDataCreatorCommandHandler"
     arguments: ["@Apps.nfc.NfcDataCreator"]
     tags:
       - { name: "commandHandler" }

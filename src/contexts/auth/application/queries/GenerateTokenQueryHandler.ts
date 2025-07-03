@@ -1,7 +1,7 @@
-import { Query } from '../../shared/domain/cqrs/Query';
-import { QueryHandler } from '../../shared/domain/cqrs/QueryHandler';
-import { GenerateTokenQuery } from '../domain/GenerateTokenQuery';
-import { JwtService, TokenPair } from '../../shared/domain/jwt/JwtService';
+import { GenerateTokenQuery } from '@contexts/auth/domain/GenerateTokenQuery';
+import { Query } from '@contexts/shared/domain/cqrs/Query';
+import { QueryHandler } from '@contexts/shared/domain/cqrs/QueryHandler';
+import { JwtService, TokenPair } from '@contexts/shared/domain/jwt/JwtService';
 
 export class GenerateTokenQueryHandler implements QueryHandler<GenerateTokenQuery, TokenPair> {
   constructor(private readonly jwtService: JwtService) {}

@@ -3,19 +3,45 @@ services:
     class: "@app/controllers/auth/PostRegisterController"
     arguments: ["@Shared.Domain.CommandBus", "@Shared.Domain.QueryBus"]
 
-  Apps.auth.UserRegistrator:
-    class: "@contexts/auth/application/UserRegistrator"
+  Apps.auth.controllers.PostLoginController:
+    class: "@app/controllers/auth/PostLoginController"
+    arguments: ["@Shared.Domain.CommandBus", "@Shared.Domain.QueryBus"]
+
+  Apps.auth.cases.UserRegistrator:
+    class: "@contexts/auth/application/cases/UserRegistrator"
     arguments: ["@Apps.auth.UserMongoRepository"]
 
-  Apps.auth.RegisterUserCommandHandler:
-    class: "@contexts/auth/application/RegisterUserCommandHandler"
-    arguments: ["@Apps.auth.UserRegistrator"]
+  Apps.auth.cases.UserFinder:
+    class: "@contexts/auth/application/cases/UserFinder"
+    arguments: ["@Apps.auth.UserMongoRepository"]
+
+  Apps.auth.commands.RegisterUserCommandHandler:
+    class: "@contexts/auth/application/commands/RegisterUserCommandHandler"
+    arguments: ["@Apps.auth.cases.UserRegistrator"]
     tags:
       - { name: "commandHandler" }
 
-  Apps.auth.GenerateTokenQueryHandler:
-    class: "@contexts/auth/application/GenerateTokenQueryHandler"
+  Apps.auth.commands.ValidateUserPasswordCommandHandler:
+    class: "@contexts/auth/application/commands/ValidateUserPasswordCommandHandler"
+    arguments: []
+    tags:
+      - { name: "commandHandler" }
+
+  Apps.auth.queries.GenerateTokenQueryHandler:
+    class: "@contexts/auth/application/queries/GenerateTokenQueryHandler"
     arguments: ["@Shared.Domain.JwtService"]
+    tags:
+      - { name: "queryHandler" }
+
+  Apps.auth.queries.GenerateTokenFromUserQueryHandler:
+    class: "@contexts/auth/application/queries/GenerateTokenFromUserQueryHandler"
+    arguments: ["@Shared.Domain.JwtService"]
+    tags:
+      - { name: "queryHandler" }
+
+  Apps.auth.queries.GetUserByEmailQueryHandler:
+    class: "@contexts/auth/application/queries/GetUserByEmailQueryHandler"
+    arguments: ["@Apps.auth.cases.UserFinder"]
     tags:
       - { name: "queryHandler" }
 

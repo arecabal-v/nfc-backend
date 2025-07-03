@@ -17,3 +17,4 @@ export interface JwtService {
   generateRefreshToken(payload: Omit<JwtPayload, 'iat' | 'exp'>): string;
   verifyToken(token: string): JwtPayload;
 }
+ 

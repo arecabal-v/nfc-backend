@@ -18,28 +18,16 @@ export default class PostRegisterController implements BaseController {
     const { email, password, name } = req.body;
 
     const userId = UserId.random().value;
-
-    const command = new RegisterUserCommand(
-        userId,
-        email,
-        password,
-        name,
-    );
-
+    const command = new RegisterUserCommand(userId, email, password, name);
     await this.commandBus.dispatch(command);
 
-    const generateTokenQuery = new GenerateTokenQuery(
-        userId,
-        email,
-        name,
-    );
-
-    const tokens = await this.queryBus.ask(generateTokenQuery) as TokenPair;
+    const generateTokenQuery = new GenerateTokenQuery(userId, email, name);
+    const { accessToken, refreshToken } = await this.queryBus.ask(generateTokenQuery) as TokenPair;
 
     res.status(httpStatus.CREATED).json({
       message: 'User registered successfully',
-      accessToken: tokens.accessToken,
-      refreshToken: tokens.refreshToken,
+      accessToken,
+      refreshToken,
     });
   }
 }

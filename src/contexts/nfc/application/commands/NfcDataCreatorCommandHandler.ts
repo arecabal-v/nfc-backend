@@ -1,11 +1,11 @@
-import { CommandHandler } from '../../shared/domain/cqrs/CommandHandler';
-import { NfcDataCreatorCommand } from '../domain/NfcDataCreatorCommand';
-import { NfcDataCreator } from './NfcDataCreator';
-import { NfcTag } from '../domain/NfcTag';
-import { NfcTagId } from '../domain/NfcTagId';
-import { UserId } from '../../shared/domain/UserId';
-import { NfcData } from '../domain/NfcData';
-import { ContactInfo } from '../domain/ContactInfo';
+import { CommandHandler } from '@contexts/shared/domain/cqrs/CommandHandler';
+import { NfcDataCreatorCommand } from '@contexts/nfc/domain/NfcDataCreatorCommand';
+import { NfcDataCreator } from '../cases/NfcDataCreator';
+import { NfcTag } from '@contexts/nfc/domain/NfcTag';
+import { NfcTagId } from '@contexts/nfc/domain/NfcTagId';
+import { UserId } from '@contexts/shared/domain/UserId';
+import { NfcData } from '@contexts/nfc/domain/NfcData';
+import { ContactInfo } from '@contexts/nfc/domain/ContactInfo';
 
 export class NfcDataCreatorCommandHandler implements CommandHandler<NfcDataCreatorCommand> {
   constructor(private readonly nfcDataCreator: NfcDataCreator) {}

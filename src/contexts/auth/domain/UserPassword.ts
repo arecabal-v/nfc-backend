@@ -19,6 +19,10 @@ export class UserPassword extends StringValueObject {
     return hashedInput === hashedPassword;
   }
 
+  compare(password: UserPassword): boolean {
+    return UserPassword.verify(password.value, this.value);
+  }
+
   private ensureValidPassword(value: string): void {
     if (value.length === 0) {
       throw new Error('Password cannot be empty');

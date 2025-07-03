@@ -1,5 +1,5 @@
-import { User } from '../domain/User';
-import { UserRepository } from '../domain/UserRepository';
+import { User } from '@contexts/auth/domain/User';
+import { UserRepository } from '@contexts/auth/domain/UserRepository';
 
 export class UserRegistrator {
   constructor(private readonly userRepository: UserRepository) {}

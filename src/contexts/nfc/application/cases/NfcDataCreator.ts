@@ -1,5 +1,5 @@
-import { NfcTag } from '../domain/NfcTag';
-import { NfcRepository } from '../domain/NfcRepository';
+import { NfcRepository } from '@contexts/nfc/domain/NfcRepository';
+import { NfcTag } from '@contexts/nfc/domain/NfcTag';
 
 export class NfcDataCreator {
   constructor(

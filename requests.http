@@ -52,6 +52,35 @@ Content-Type: {{contentType}}
 
 ###
 
+### Login User - Devuelve access y refresh tokens
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "usuario@ejemplo.com",
+  "password": "miPassword123"
+}
+
+# Respuesta esperada:
+# {
+#   "message": "Login successful",
+#   "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+#   "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+# }
+
+###
+
+### Login Another User for Testing
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "test@example.com",
+  "password": "password123"
+}
+
+###
+
 ### ========================================
 ### NFC ENDPOINTS
 ### ========================================
