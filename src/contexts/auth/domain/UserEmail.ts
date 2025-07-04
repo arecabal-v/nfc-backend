@@ -1,5 +1,6 @@
 import { StringValueObject } from '../../shared/domain/value-object/string';
 import { EmailValidator } from '../../shared/domain/EmailValidator';
+import { BadRequestError } from '@contexts/shared/domain/errors/BadRequestError';
 
 export class UserEmail extends StringValueObject {
   constructor(value: string) {
@@ -9,7 +10,7 @@ export class UserEmail extends StringValueObject {
 
   private ensureValidEmail(value: string): void {
     if (!EmailValidator.isValid(value)) {
-      throw new Error('Invalid email format');
+      throw new BadRequestError('Invalid email format');
     }
   }
 }

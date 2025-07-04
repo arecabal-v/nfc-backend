@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { JwtService, JwtPayload, TokenPair } from '../../domain/jwt/JwtService';
+import { UnauthorizedError } from '@contexts/shared/domain/errors/UnauthorizedError';
 
 export class JsonWebTokenService implements JwtService {
   constructor(private readonly secret: string) {}
@@ -39,7 +40,7 @@ export class JsonWebTokenService implements JwtService {
     try {
       return jwt.verify(token, this.secret) as JwtPayload;
     } catch (error) {
-      throw new Error('Invalid or expired token');
+      throw new UnauthorizedError('Invalid or expired token');
     }
   }
 }

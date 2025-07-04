@@ -1,3 +1,4 @@
+import { BadRequestError } from '@contexts/shared/domain/errors/BadRequestError';
 import { ContactInfo } from './ContactInfo';
 
 export interface NfcDataValue {
@@ -20,7 +21,7 @@ export class NfcData {
       this.value.contactInfo.length > 0;
 
     if (!hasAnyData) {
-      throw new Error('NFC data must contain at least one piece of information');
+      throw new BadRequestError('NFC data must contain at least one piece of information');
     }
   }
 

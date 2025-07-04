@@ -4,6 +4,7 @@ import { NfcTag } from '../../domain/NfcTag';
 import { Query } from '@contexts/shared/domain/cqrs/Query';
 import { NfcDataGetter } from '../cases/NfcDataGetter';
 import { NfcTagId } from '@contexts/nfc/domain/NfcTagId';
+import { NotFoundError } from '@contexts/shared/domain/errors/NotFoundError';
 
 export class GetNfcTagByIdQueryHandler implements QueryHandler<GetNfcTagByIdQuery, NfcTag> {
   constructor(private readonly nfcDataGetter: NfcDataGetter) {}
@@ -16,7 +17,7 @@ export class GetNfcTagByIdQueryHandler implements QueryHandler<GetNfcTagByIdQuer
     const nfcTagId = new NfcTagId(query.id);
     const nfcTag = await this.nfcDataGetter.run(nfcTagId);
 
-    if (!nfcTag) throw new Error('Nfc tag not found');
+    if (!nfcTag) throw new NotFoundError('Nfc tag not found');
     return nfcTag;
   }
 }

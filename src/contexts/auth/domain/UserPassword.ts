@@ -1,3 +1,4 @@
+import { BadRequestError } from '@contexts/shared/domain/errors/BadRequestError';
 import { StringValueObject } from '../../shared/domain/value-object/string';
 import * as crypto from 'crypto';
 
@@ -25,7 +26,7 @@ export class UserPassword extends StringValueObject {
 
   private ensureValidPassword(value: string): void {
     if (value.length === 0) {
-      throw new Error('Password cannot be empty');
+      throw new BadRequestError('Password cannot be empty');
     }
   }
 }

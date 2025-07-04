@@ -4,6 +4,7 @@ import { QueryHandler } from '@contexts/shared/domain/cqrs/QueryHandler';
 import { User } from '@contexts/auth/domain/User';
 import { UserEmail } from '@contexts/auth/domain/UserEmail';
 import { UserFinder } from '../cases/UserFinder';
+import { NotFoundError } from '@contexts/shared/domain/errors/NotFoundError';
 
 export class GetUserByEmailQueryHandler implements QueryHandler<GetUserByEmailQuery, User> {
   constructor(private readonly userFinder: UserFinder) {}
@@ -17,7 +18,7 @@ export class GetUserByEmailQueryHandler implements QueryHandler<GetUserByEmailQu
 
     const user = await this.userFinder.run(email);
 
-    if (!user) throw new Error('User not found');
+    if (!user) throw new NotFoundError('User not found');
 
     return user;
   }

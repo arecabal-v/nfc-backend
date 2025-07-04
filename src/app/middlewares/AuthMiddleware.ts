@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import httpStatus from 'http-status';
 import { JwtService, JwtPayload } from '@contexts/shared/domain/jwt/JwtService';
+import { UnauthorizedError } from '@contexts/shared/domain/errors/UnauthorizedError';
 
 declare module 'express' {
   export interface Request {
@@ -12,32 +12,16 @@ export class AuthMiddleware {
   constructor(private readonly jwtService: JwtService) {}
 
   authenticate = (req: Request, res: Response, next: NextFunction): void => {
-    try {
-      const authHeader = req.headers.authorization;
+    const authHeader = req.headers.authorization;
 
-      if (!authHeader) {
-        res.status(httpStatus.UNAUTHORIZED).json({
-          error: 'Authorization header is required',
-        });
-        return;
-      }
+    if (!authHeader) throw new UnauthorizedError('Authorization header is required');
 
-      const token = this.extractTokenFromHeader(authHeader);
+    const token = this.extractTokenFromHeader(authHeader);
 
-      if (!token) {
-        res.status(httpStatus.UNAUTHORIZED).json({
-          error: 'Bearer token is required',
-        });
-        return;
-      }
+    if (!token) throw new UnauthorizedError('Bearer token is required');
 
-      req.tokenPayload = this.jwtService.verifyToken(token);
-      next();
-    } catch (error) {
-      res.status(httpStatus.UNAUTHORIZED).json({
-        error: 'Invalid or expired token',
-      });
-    }
+    req.tokenPayload = this.jwtService.verifyToken(token);
+    next();
   };
 
   private extractTokenFromHeader(authHeader: string): string | null {

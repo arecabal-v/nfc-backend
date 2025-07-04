@@ -1,3 +1,4 @@
+import { BadRequestError } from '@contexts/shared/domain/errors/BadRequestError';
 import { EmailValidator } from '../../shared/domain/EmailValidator';
 import { ContactType } from './ContactType';
 
@@ -20,12 +21,11 @@ export class ContactInfo {
 
   private validateContactInfo(data: ContactInfoData): void {
     if (!data.name || !data.phone || !data.email) {
-      throw new Error('Contact info must have name, phone, and email');
+      throw new BadRequestError('Contact info must have name, phone, and email');
     }
 
     if (!EmailValidator.isValid(data.email)) {
-      throw new Error('Invalid email format');
+      throw new BadRequestError('Invalid email format');
     }
   }
 }
- 
