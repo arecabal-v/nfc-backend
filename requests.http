@@ -189,11 +189,11 @@ Authorization: Bearer {{accessToken}}
 
 ###
 
-### Get Public NFC Tag - No requiere autenticación
+### Get Public NFC Tag (JSON) - No requiere autenticación
 GET {{baseUrl}}/nfc/public/NFC001234567890
 Content-Type: {{contentType}}
 
-# Respuesta esperada:
+# Respuesta esperada (JSON):
 # {
 #   "serialNumber": "NFC001234567890",
 #   "contactInfo": [
@@ -213,6 +213,16 @@ Content-Type: {{contentType}}
 #     }
 #   ]
 # }
+
+###
+
+### Get Public NFC Tag (HTML) - No requiere autenticación
+GET {{baseUrl}}/nfc/contact/NFC001234567890
+
+# Respuesta esperada (HTML):
+# Página HTML responsive con información de contacto
+# Optimizada para escaneo directo desde móviles
+# Incluye enlaces directos para llamar y enviar emails
 
 ###
 
@@ -252,7 +262,7 @@ Authorization: Bearer {{accessToken}}
 # - Refresh Token: válido por 30 días
 #
 # Tipos de contacto disponibles:
-# - "tutor": Tutor/Profesor
+# - "tutor": Tutor
 # - "father": Padre  
 # - "mother": Madre
 # - "other": Otro
@@ -261,3 +271,7 @@ Authorization: Bearer {{accessToken}}
 # - Debe ser un UUID v4 válido
 # - Para crear: genera un nuevo UUID v4
 # - Para actualizar: usa el UUID del NFC existente
+#
+# Endpoints públicos (no requieren autenticación):
+# - GET /nfc/public/{serialNumber} → Devuelve JSON (para APIs)
+# - GET /nfc/contact/{serialNumber} → Devuelve HTML (para escaneo móvil)

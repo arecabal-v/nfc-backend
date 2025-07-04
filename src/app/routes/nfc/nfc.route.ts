@@ -5,12 +5,14 @@ import GetNfcTagController from '@app/controllers/nfc/GetNfcTagController';
 import GetNfcTagsByUserController from '@app/controllers/nfc/GetNfcTagsByUserController';
 import { AuthMiddleware } from '@app/middlewares/AuthMiddleware';
 import { GetPublicNfcTagController } from '@app/controllers/nfc/GetPublicNfcTagController';
+import { GetPublicNfcTagJsonController } from '@app/controllers/nfc/GetPublicNfcTagJsonController';
 
 export const register = (router: Router) => {
   const postNfcDataController: PostNfcDataController = container.get('Apps.nfc.controllers.PostNfcDataController');
   const getNfcTagController: GetNfcTagController = container.get('Apps.nfc.controllers.GetNfcTagController');
   const getNfcTagsByUserController: GetNfcTagsByUserController = container.get('Apps.nfc.controllers.GetNfcTagsByUserController');
   const getPublicNfcTagController: GetPublicNfcTagController = container.get('Apps.nfc.controllers.GetPublicNfcTagController');
+  const getPublicNfcTagJsonController: GetPublicNfcTagJsonController = container.get('Apps.nfc.controllers.GetPublicNfcTagJsonController');
   const authMiddleware: AuthMiddleware = container.get('Shared.AuthMiddleware');
 
   router.post('/nfc/data',
@@ -34,7 +36,15 @@ export const register = (router: Router) => {
       },
   );
 
+  // API JSON para Swagger y otros usos
   router.get('/nfc/public/:serialNumber',
+      (req: Request, res: Response) => {
+        return getPublicNfcTagJsonController.run(req, res);
+      },
+  );
+
+  // Página HTML para escaneo directo de NFC
+  router.get('/nfc/contact/:serialNumber',
       (req: Request, res: Response) => {
         return getPublicNfcTagController.run(req, res);
       },

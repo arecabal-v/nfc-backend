@@ -37,3 +37,7 @@ services:
   Shared.AuthMiddleware:
     class: ../../../app/middlewares/AuthMiddleware
     arguments: ["@Shared.Domain.JwtService"]
+
+  Shared.TemplateService:
+    class: ../../../contexts/shared/infrastructure/template/HtmlTemplateService
+    arguments: []

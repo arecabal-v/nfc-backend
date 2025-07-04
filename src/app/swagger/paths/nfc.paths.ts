@@ -207,10 +207,10 @@
  *
  * /nfc/public/{serialNumber}:
  *   get:
- *     summary: Obtener información pública del NFC
+ *     summary: Obtener información pública del NFC (JSON)
  *     description: |
- *       Obtiene la información de contacto pública de un NFC tag usando su número de serie.
- *       **No requiere autenticación** - Endpoint público para casos de emergencia.
+ *       Obtiene la información de contacto pública de un NFC tag usando su número de serie en formato JSON.
+ *       **No requiere autenticación** - Endpoint público para APIs y uso programático.
  *     tags:
  *       - Public
  *     parameters:
@@ -244,6 +244,64 @@
  *                       name: "Carlos Pérez"
  *                       phone: "+34698765432"
  *                       email: "carlos.perez@gmail.com"
+ *       404:
+ *         description: NFC tag no encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/NotFoundError'
+ *             examples:
+ *               not_found:
+ *                 summary: NFC no encontrado
+ *                 value:
+ *                   error: "NFC tag not found"
+ *                   code: "NOT-001"
+ *       500:
+ *         description: Error interno del servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/InternalServerError'
+ *
+ * /nfc/contact/{serialNumber}:
+ *   get:
+ *     summary: Obtener página de contacto del NFC (HTML)
+ *     description: |
+ *       Obtiene una página HTML responsive con la información de contacto del NFC tag.
+ *       **No requiere autenticación** - Endpoint público optimizado para escaneo directo desde móviles.
+ *       Ideal para casos de emergencia donde se necesita acceso rápido a la información de contacto.
+ *     tags:
+ *       - Public
+ *     parameters:
+ *       - name: serialNumber
+ *         in: path
+ *         required: true
+ *         description: Número de serie del chip NFC
+ *         schema:
+ *           type: string
+ *           example: "NFC001234567890"
+ *     responses:
+ *       200:
+ *         description: Página HTML con información de contacto
+ *         content:
+ *           text/html:
+ *             schema:
+ *               type: string
+ *               example: |
+ *                 <!DOCTYPE html>
+ *                 <html lang="es">
+ *                 <head>
+ *                   <title>Información de Contacto - NFC001234567890</title>
+ *                   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ *                 </head>
+ *                 <body>
+ *                   <div class="container">
+ *                     <h1>📋 Información de Contacto</h1>
+ *                     <p>Collar NFC: NFC001234567890</p>
+ *                     <!-- Información de contacto formateada -->
+ *                   </div>
+ *                 </body>
+ *                 </html>
  *       404:
  *         description: NFC tag no encontrado
  *         content:
