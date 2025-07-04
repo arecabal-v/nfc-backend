@@ -81,6 +81,20 @@ Content-Type: {{contentType}}
 
 ###
 
+### Refresh Token - Obtiene nuevos tokens usando el refresh token
+POST {{baseUrl}}/auth/refresh
+Content-Type: {{contentType}}
+Authorization: Bearer {{refreshToken}}
+
+# Respuesta esperada:
+# {
+#   "message": "Tokens refreshed successfully",
+#   "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+#   "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+# }
+
+###
+
 ### ========================================
 ### NFC ENDPOINTS
 ### ========================================
@@ -91,7 +105,6 @@ Content-Type: {{contentType}}
 Authorization: Bearer {{accessToken}}
 
 {
-  "userId": "123e4567-e89b-12d3-a456-426614174000",
   "serialNumber": "NFC001234567890",
   "contactInfo": [
     {
@@ -145,9 +158,9 @@ Authorization: Bearer {{accessToken}}
 ###
 
 ### Get NFC Tags by User ID - Requiere autenticación JWT
-GET {{baseUrl}}/nfc/tags/user/123e4567-e89b-12d3-a456-426614174000
+GET {{baseUrl}}/nfc/tags/user
 Content-Type: {{contentType}}
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzZGU4MWFmMy00NDQ4LTRmNDgtYTdkOS03NTcyZTBhN2IyNzciLCJlbWFpbCI6InVzdWFyaW9AZWplbXBsby5jb20iLCJuYW1lIjoiSnVhbiBQw6lyZXoiLCJpYXQiOjE3NTE1Nzg0NDUsImV4cCI6MTc1MTY2NDg0NX0.1dabwRr8rKMLK1bUM3PliGK_1wHcCbpK-6eu4nmRyyU
+Authorization: Bearer {{accessToken}}
 
 # Respuesta esperada:
 # {

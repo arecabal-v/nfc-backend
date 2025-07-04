@@ -9,7 +9,7 @@ export default class GetNfcTagsByUserController implements BaseController {
   constructor(private readonly queryBus: QueryBus) {}
 
   async run(req: Request, res: Response, _next: NextFunction): Promise<void> {
-    const { userId } = req.params;
+    const { userId } = req.tokenPayload!;
     const query = new GetNfcTagsByUserIdQuery(userId);
 
     const nfcTags = await this.queryBus.ask(query) as NfcTagSummary[];

@@ -7,6 +7,10 @@ services:
     class: "@app/controllers/auth/PostLoginController"
     arguments: ["@Shared.Domain.CommandBus", "@Shared.Domain.QueryBus"]
 
+  Apps.auth.controllers.GetRefreshTokenController:
+    class: "@app/controllers/auth/GetRefreshTokenController"
+    arguments: ["@Shared.Domain.QueryBus"]
+
   Apps.auth.cases.UserRegistrator:
     class: "@contexts/auth/application/cases/UserRegistrator"
     arguments: ["@Apps.auth.UserMongoRepository"]

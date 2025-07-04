@@ -27,7 +27,7 @@ export const register = (router: Router) => {
       },
   );
 
-  router.get('/nfc/tags/user/:userId',
+  router.get('/nfc/tags/user',
       authMiddleware.authenticate,
       (req: Request, res: Response, next: NextFunction) => {
         return getNfcTagsByUserController.run(req, res, next);

@@ -1,6 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
 import httpStatus from 'http-status';
-import { JwtService } from '@contexts/shared/domain/jwt/JwtService';
+import { JwtService, JwtPayload } from '@contexts/shared/domain/jwt/JwtService';
+
+declare module 'express' {
+  export interface Request {
+    tokenPayload?: JwtPayload;
+  }
+}
 
 export class AuthMiddleware {
   constructor(private readonly jwtService: JwtService) {}
@@ -24,8 +30,8 @@ export class AuthMiddleware {
         });
         return;
       }
-      this.jwtService.verifyToken(token);
 
+      req.tokenPayload = this.jwtService.verifyToken(token);
       next();
     } catch (error) {
       res.status(httpStatus.UNAUTHORIZED).json({
@@ -44,4 +50,3 @@ export class AuthMiddleware {
     return parts[1];
   }
 }
- 

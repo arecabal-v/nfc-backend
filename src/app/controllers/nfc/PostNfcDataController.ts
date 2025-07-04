@@ -8,7 +8,8 @@ export default class PostNfcDataController implements BaseController {
   constructor(private readonly commandBus: CommandBus) {}
 
   async run(req: Request, res: Response, _next: NextFunction): Promise<void> {
-    const { userId, serialNumber, contactInfo } = req.body;
+    const { userId } = req.tokenPayload!;
+    const { serialNumber, contactInfo } = req.body;
 
     const command = new NfcDataCreatorCommand(
         userId,
