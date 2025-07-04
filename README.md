@@ -128,6 +128,46 @@ Content-Type: application/json
 }
 ```
 
+#### **Iniciar Sesión**
+
+```http
+POST /api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "usuario@ejemplo.com",
+  "password": "miPassword123"
+}
+```
+
+**Respuesta exitosa (200):**
+
+```json
+{
+  "message": "Login successful",
+  "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+```
+
+#### **Renovar Tokens**
+
+```http
+POST /api/v1/auth/refresh
+Content-Type: application/json
+Authorization: Bearer <refresh_token>
+```
+
+**Respuesta exitosa (200):**
+
+```json
+{
+  "message": "Tokens refreshed successfully",
+  "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+```
+
 #### **Información de Tokens JWT**
 
 - **Access Token**: Válido por **24 horas**, usado para autenticar requests
@@ -143,7 +183,6 @@ Content-Type: application/json
 Authorization: Bearer <access_token>
 
 {
-  "userId": "123e4567-e89b-12d3-a456-426614174000",
   "serialNumber": "NFC001234567890",
   "contactInfo": [
     {
@@ -171,6 +210,70 @@ Authorization: Bearer <access_token>
   "message": "NFC data programmed successfully"
 }
 ```
+
+> **Nota**: El `userId` se obtiene automáticamente del token JWT, no es necesario enviarlo en el body.
+
+#### **Obtener NFC Tag por ID**
+
+```http
+GET /api/v1/nfc/tag/{tagId}
+Content-Type: application/json
+Authorization: Bearer <access_token>
+```
+
+**Respuesta exitosa (200):**
+
+```json
+{
+  "data": {
+    "id": "123e4567-e89b-12d3-a456-426614174000",
+    "userId": "123e4567-e89b-12d3-a456-426614174000",
+    "serialNumber": "NFC001234567890",
+    "nfcData": {
+      "contactInfo": [
+        {
+          "type": "tutor",
+          "name": "María García",
+          "phone": "+34612345678",
+          "email": "maria.garcia@colegio.edu",
+          "company": "Colegio San José",
+          "position": "Tutora de 5º Primaria"
+        }
+      ]
+    },
+    "isActive": true,
+    "createdAt": "2024-01-01T10:00:00.000Z",
+    "updatedAt": "2024-01-01T10:00:00.000Z"
+  }
+}
+```
+
+#### **Obtener NFC Tags del Usuario**
+
+```http
+GET /api/v1/nfc/tags/user
+Content-Type: application/json
+Authorization: Bearer <access_token>
+```
+
+**Respuesta exitosa (200):**
+
+```json
+{
+  "nfcTags": [
+    {
+      "id": "123e4567-e89b-12d3-a456-426614174000",
+      "serialNumber": "NFC001234567890"
+    },
+    {
+      "id": "456e7890-e89b-12d3-a456-426614174001",
+      "serialNumber": "NFC987654321"
+    }
+  ]
+}
+```
+
+> **Nota**: El `userId` se obtiene automáticamente del token JWT.
 
 #### **Obtener Información Pública del NFC**
 
@@ -263,7 +366,6 @@ curl -X POST http://localhost:3000/api/v1/nfc/data \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $ACCESS_TOKEN" \
   -d '{
-    "userId": "123e4567-e89b-12d3-a456-426614174000",
     "serialNumber": "NFC001234567890",
     "contactInfo": [
       {
@@ -274,6 +376,17 @@ curl -X POST http://localhost:3000/api/v1/nfc/data \
       }
     ]
   }'
+```
+
+**Renovar tokens:**
+
+```bash
+# Usar el refresh token para obtener nuevos tokens
+REFRESH_TOKEN="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+
+curl -X POST http://localhost:3000/api/v1/auth/refresh \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $REFRESH_TOKEN"
 ```
 
 **Obtener información pública del NFC:**
@@ -300,6 +413,7 @@ nfc-backend/
 │   ├── app/                    # Capa de aplicación
 │   │   ├── controllers/        # Controladores HTTP
 │   │   ├── routes/            # Definición de rutas
+│   │   ├── middlewares/       # Middlewares (Auth, etc.)
 │   │   ├── dependency-injection/ # Configuración DI
 │   │   └── server/            # Configuración del servidor
 │   └── contexts/              # Contextos de dominio
@@ -325,7 +439,8 @@ nfc-backend/
 - ✅ **Autenticación JWT** con access/refresh tokens
 - ✅ **Separación CQRS** para comandos y queries
 - ✅ **Endpoint público** para información de emergencia
-- ⚠️ **Autorización por usuario** (pendiente implementar)
+- ✅ **Middleware de autenticación** reutilizable
+- ✅ **Obtención automática del userId** desde el token JWT
 
 ## 🔑 **Sistema de Autenticación JWT**
 
@@ -334,6 +449,7 @@ nfc-backend/
 1. **Registro**: Usuario se registra → Recibe access + refresh tokens
 2. **Autenticación**: Cliente incluye access token en header `Authorization: Bearer <token>`
 3. **Renovación**: Cuando access token expira, usar refresh token para obtener nuevos tokens
+4. **Middleware**: Valida automáticamente tokens y extrae información del usuario
 
 ### **Configuración JWT**
 
@@ -354,10 +470,20 @@ nfc-backend/
 }
 ```
 
+### **Middleware de Autenticación**
+
+El middleware automáticamente:
+
+- Valida el formato del header `Authorization`
+- Verifica la validez del token JWT
+- Extrae el payload y lo hace disponible en `req.tokenPayload`
+- Permite que los controladores accedan al `userId` sin enviarlo en el body
+
 ## 🚧 **Próximas Funcionalidades**
 
-- [ ] Endpoint para renovar tokens
-- [ ] Autorización por usuario
+- [x] Endpoint para renovar tokens
+- [x] Autorización por usuario mediante JWT
+- [x] Middleware de autenticación reutilizable
 - [ ] Actualización de datos NFC
 - [ ] Gestión de múltiples tags por usuario
 - [ ] Logout y revocación de tokens
