@@ -95,6 +95,42 @@ npm run prod
 
 El servidor estará disponible en: `http://localhost:3000`
 
+## 📚 **Documentación de la API**
+
+### **🔗 Swagger UI**
+
+La documentación interactiva de la API está disponible en:
+
+```
+http://localhost:3000/api-docs
+```
+
+**Características de Swagger:**
+
+- ✅ **Documentación interactiva** - Prueba los endpoints directamente
+- ✅ **Autenticación JWT** - Configura una vez y úsala en todos los endpoints
+- ✅ **Ejemplos de requests/responses** - Ve ejemplos reales de cada endpoint
+- ✅ **Validación de esquemas** - Comprende la estructura de datos requerida
+- ✅ **Códigos de estado HTTP** - Documentación completa de errores
+- ✅ **Organización por tags** - Endpoints agrupados por funcionalidad
+
+### **🔧 Cómo usar Swagger**
+
+1. **Inicia el servidor**: `npm run dev`
+2. **Abre Swagger**: Ve a `http://localhost:3000/api-docs`
+3. **Autentícate**:
+   - Haz clic en "Authorize" (🔒)
+   - Registra un usuario o haz login
+   - Copia el `accessToken` de la respuesta
+   - Pégalo en el campo de autorización (sin "Bearer ")
+4. **Prueba los endpoints**: Todos los endpoints protegidos usarán tu token automáticamente
+
+### **📄 Obtener especificación JSON**
+
+```
+http://localhost:3000/api-docs.json
+```
+
 ## 📚 **API Endpoints**
 
 ### **Base URL**
@@ -420,7 +456,18 @@ nfc-backend/
 │   ├── app/                    # Capa de aplicación
 │   │   ├── controllers/        # Controladores HTTP
 │   │   ├── routes/            # Definición de rutas
-│   │   ├── middlewares/       # Middlewares (Auth, etc.)
+│   │   ├── middlewares/       # Middlewares (Auth, Swagger, etc.)
+│   │   ├── swagger/           # Documentación Swagger modular
+│   │   │   ├── schemas/       # Esquemas por contexto
+│   │   │   │   ├── auth.schemas.ts
+│   │   │   │   ├── nfc.schemas.ts
+│   │   │   │   ├── health.schemas.ts
+│   │   │   │   └── common.schemas.ts
+│   │   │   ├── paths/         # Endpoints por contexto
+│   │   │   │   ├── auth.paths.ts
+│   │   │   │   ├── nfc.paths.ts
+│   │   │   │   └── health.paths.ts
+│   │   │   └── swagger.config.ts # Configuración principal
 │   │   ├── dependency-injection/ # Configuración DI
 │   │   └── server/            # Configuración del servidor
 │   └── contexts/              # Contextos de dominio
@@ -433,9 +480,24 @@ nfc-backend/
 │       │   └── application/   # Casos de uso y queries
 │       └── nfc/               # Contexto de NFC
 ├── docker-compose.yml         # MongoDB con Docker
-├── requests.http             # Ejemplos de API
+├── requests.http             # Ejemplos de API (mantenido)
 └── README.md                # Este archivo
 ```
+
+### **📖 Estructura Modular de Swagger**
+
+La documentación Swagger está organizada de forma modular para facilitar el mantenimiento:
+
+- **`schemas/`**: Esquemas de datos separados por contexto
+- **`paths/`**: Definición de endpoints separados por contexto
+- **`swagger.config.ts`**: Configuración principal que importa todo
+
+**Beneficios:**
+
+- ✅ **Escalabilidad**: Fácil agregar nuevos contextos
+- ✅ **Mantenibilidad**: Cada archivo maneja su responsabilidad
+- ✅ **Claridad**: Documentación organizada por funcionalidad
+- ✅ **Reutilización**: Schemas compartidos entre endpoints
 
 ## 🔒 **Seguridad**
 
@@ -525,6 +587,8 @@ El sistema utiliza un enfoque inteligente para manejar tanto la creación como l
 - [x] Validación de UUID v4 para nfcTagId
 - [x] Endpoint público para información de emergencia
 - [x] Prevención de registro con emails duplicados
+- [x] Documentación Swagger interactiva y modular
+- [x] Manejo de errores HTTP (400, 401, 404, 500)
 
 ## 🔄 **Próximas Mejoras**
 

@@ -7,6 +7,7 @@ import container from '@app/dependency-injection';
 import { registerRoutes } from '../routes';
 import { ErrorHandlerResponse } from './ErrorHandleResponse';
 import { RouteErrorHandlerResponse } from './RouteErrorHandleResponse';
+import { SwaggerMiddleware } from '../middlewares/SwaggerMiddleware';
 import Logger from '@contexts/shared/domain/Logger';
 
 export class Server {
@@ -26,6 +27,12 @@ export class Server {
     this.app.use(helmet.noSniff());
     this.app.use(helmet.hidePoweredBy());
     this.app.use(helmet.frameguard({ action: 'deny' }));
+
+    this.app.get('/favicon.ico', (req, res) => {
+      res.status(204).end();
+    });
+
+    SwaggerMiddleware.setup(this.app);
 
     const router = Router();
     this.app.use('/api/v1', router, ErrorHandlerResponse);
