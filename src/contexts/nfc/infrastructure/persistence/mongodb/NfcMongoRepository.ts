@@ -75,14 +75,12 @@ export class NfcMongoRepository extends MongoRepository<NfcTag> implements NfcRe
   }
 
   private documentToAggregate(document: NfcTagDocument): NfcTag {
-    const id = new NfcTagId(document._id);
-    const userId = new UserId(document.userId);
     const nfcData = new NfcData({
       contactInfo: document.nfcData.contactInfo.map((info) => {
         return new ContactInfo(info);
       }),
     });
 
-    return NfcTag.create(id, userId, document.serialNumber, nfcData);
+    return NfcTag.fromPrimitives(document._id, document.userId, document.serialNumber, nfcData, document.isActive);
   }
 }

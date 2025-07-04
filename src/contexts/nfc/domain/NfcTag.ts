@@ -10,8 +10,8 @@ export class NfcTag extends AggregateRoot {
     private readonly _serialNumber: string,
     private readonly _nfcData: NfcData,
     private readonly _isActive: boolean,
-    private readonly _createdAt: Date,
-    private readonly _updatedAt: Date,
+    private readonly _updatedAt?: Date,
+    private readonly _createdAt?: Date,
   ) {
     super();
   }
@@ -34,9 +34,18 @@ export class NfcTag extends AggregateRoot {
         this._serialNumber,
         nfcData,
         this._isActive,
-        this._createdAt,
         now,
     );
+  }
+
+  static fromPrimitives(id: string, userId: string, serialNumber: string, nfcData: NfcData, isActive: boolean) {
+    return new NfcTag(
+        new NfcTagId(id),
+        new UserId(userId),
+        serialNumber,
+        nfcData,
+        isActive,
+    )
   }
 
   desactivate(): NfcTag {
@@ -47,7 +56,6 @@ export class NfcTag extends AggregateRoot {
         this._serialNumber,
         this._nfcData,
         false,
-        this._createdAt,
         now,
     );
   }
@@ -72,11 +80,11 @@ export class NfcTag extends AggregateRoot {
     return this._isActive;
   }
 
-  get createdAt(): Date {
+  get createdAt(): Date | undefined {
     return this._createdAt;
   }
 
-  get updatedAt(): Date {
+  get updatedAt(): Date | undefined {
     return this._updatedAt;
   }
 
@@ -91,8 +99,8 @@ export class NfcTag extends AggregateRoot {
         }),
       },
       isActive: this._isActive,
-      createdAt: this._createdAt,
       updatedAt: this._updatedAt,
+      createdAt: this._createdAt,
     };
   }
 }

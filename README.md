@@ -175,7 +175,7 @@ Authorization: Bearer <refresh_token>
 
 ### **🏷️ NFC Data**
 
-#### **Programar Datos NFC**
+#### **Crear/Actualizar Datos NFC**
 
 ```http
 POST /api/v1/nfc/data
@@ -183,6 +183,7 @@ Content-Type: application/json
 Authorization: Bearer <access_token>
 
 {
+  "nfcTagId": "123e4567-e89b-12d3-a456-426614174000",
   "serialNumber": "NFC001234567890",
   "contactInfo": [
     {
@@ -203,15 +204,20 @@ Authorization: Bearer <access_token>
 }
 ```
 
-**Respuesta exitosa (201):**
+**Respuesta exitosa (200):**
 
 ```json
 {
-  "message": "NFC data programmed successfully"
+  "message": "NFC data saved successfully"
 }
 ```
 
-> **Nota**: El `userId` se obtiene automáticamente del token JWT, no es necesario enviarlo en el body.
+> **Funcionalidad Inteligente:**
+>
+> - **Para CREAR**: Envía un UUID v4 nuevo → Se crea un NFC tag nuevo
+> - **Para ACTUALIZAR**: Envía el UUID de un NFC existente → Se actualiza el contenido
+> - **El userId se obtiene automáticamente del token JWT**
+> - **Las fechas se gestionan automáticamente** (createdAt en creación, updatedAt en actualización)
 
 #### **Obtener NFC Tag por ID**
 
@@ -243,7 +249,7 @@ Authorization: Bearer <access_token>
     },
     "isActive": true,
     "createdAt": "2024-01-01T10:00:00.000Z",
-    "updatedAt": "2024-01-01T10:00:00.000Z"
+    "updatedAt": "2024-01-01T15:30:00.000Z"
   }
 }
 ```
@@ -356,7 +362,7 @@ curl -X POST http://localhost:3000/api/v1/auth/register \
   }'
 ```
 
-**Programar datos NFC (con token):**
+**Crear/Actualizar datos NFC:**
 
 ```bash
 # Primero registra un usuario y obtén el accessToken
@@ -366,6 +372,7 @@ curl -X POST http://localhost:3000/api/v1/nfc/data \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $ACCESS_TOKEN" \
   -d '{
+    "nfcTagId": "123e4567-e89b-12d3-a456-426614174000",
     "serialNumber": "NFC001234567890",
     "contactInfo": [
       {
@@ -441,6 +448,8 @@ nfc-backend/
 - ✅ **Endpoint público** para información de emergencia
 - ✅ **Middleware de autenticación** reutilizable
 - ✅ **Obtención automática del userId** desde el token JWT
+- ✅ **Validación de UUID v4** para nfcTagId
+- ✅ **Prevención de emails duplicados** en registro
 
 ## 🔑 **Sistema de Autenticación JWT**
 
@@ -479,14 +488,51 @@ El middleware automáticamente:
 - Extrae el payload y lo hace disponible en `req.tokenPayload`
 - Permite que los controladores accedan al `userId` sin enviarlo en el body
 
-## 🚧 **Próximas Funcionalidades**
+## 🏷️ **Sistema NFC Inteligente**
+
+### **Gestión Unificada de NFC Tags**
+
+El sistema utiliza un enfoque inteligente para manejar tanto la creación como la actualización de NFC tags a través de un único endpoint:
+
+#### **Características Principales:**
+
+- **API Unificada**: Un solo endpoint para crear y actualizar
+- **Control del Frontend**: El cliente decide si crear o actualizar enviando el UUID
+- **Gestión Automática de Fechas**: El sistema maneja `createdAt` y `updatedAt` automáticamente
+- **Validación de UUID**: Solo acepta UUID v4 válidos para `nfcTagId`
+
+#### **Flujo de Funcionamiento:**
+
+1. **Frontend genera/obtiene UUID v4** para el `nfcTagId`
+2. **Backend verifica** si el UUID ya existe en la base de datos
+3. **Si NO existe** → Crea nuevo NFC tag con fechas actuales
+4. **Si SÍ existe** → Actualiza el contenido manteniendo `createdAt` original
+
+#### **Beneficios:**
+
+✅ **Simplicidad**: Un solo endpoint para ambas operaciones
+✅ **Flexibilidad**: Frontend controla el flujo de creación/actualización
+✅ **Consistencia**: Fechas gestionadas automáticamente por el dominio
+✅ **Seguridad**: Validación de UUID y autorización por usuario
+
+## 🚧 **Funcionalidades Completadas**
 
 - [x] Endpoint para renovar tokens
 - [x] Autorización por usuario mediante JWT
 - [x] Middleware de autenticación reutilizable
-- [ ] Actualización de datos NFC
-- [ ] Gestión de múltiples tags por usuario
-- [ ] Logout y revocación de tokens
+- [x] API unificada para crear/actualizar NFC tags
+- [x] Gestión automática de fechas de creación/actualización
+- [x] Validación de UUID v4 para nfcTagId
+- [x] Endpoint público para información de emergencia
+- [x] Prevención de registro con emails duplicados
+
+## 🔄 **Próximas Mejoras**
+
+- [ ] Soft delete para NFC tags
+- [ ] Historial de cambios en NFC tags
+- [ ] Notificaciones push
+- [ ] Rate limiting
+- [ ] Logs de auditoría
 
 ## 🤝 **Contribuir**
 

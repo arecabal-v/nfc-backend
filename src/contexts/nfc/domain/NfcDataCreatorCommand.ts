@@ -3,6 +3,7 @@ import { ContactType } from './ContactType';
 
 export class NfcDataCreatorCommand implements Command {
   constructor(
+    public readonly nfcTagId: string,
     public readonly userId: string,
     public readonly serialNumber: string,
     public readonly contactInfo: Array<{

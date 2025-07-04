@@ -99,12 +99,13 @@ Authorization: Bearer {{refreshToken}}
 ### NFC ENDPOINTS
 ### ========================================
 
-### Post NFC Data - Requiere autenticación JWT
+### Post NFC Data - Crea o actualiza datos NFC
 POST {{baseUrl}}/nfc/data
 Content-Type: {{contentType}}
 Authorization: Bearer {{accessToken}}
 
 {
+  "nfcTagId": "123e4567-e89b-12d3-a456-426614174000",
   "serialNumber": "NFC001234567890",
   "contactInfo": [
     {
@@ -123,6 +124,16 @@ Authorization: Bearer {{accessToken}}
     }
   ]
 }
+
+# Respuesta esperada:
+# {
+#   "message": "NFC data saved successfully"
+# }
+
+# Nota: 
+# - Para CREAR un nuevo NFC, envía un UUID v4 nuevo
+# - Para ACTUALIZAR un NFC existente, envía el UUID del NFC existente
+# - El userId se obtiene automáticamente del token JWT
 
 ###
 
@@ -211,7 +222,7 @@ Content-Type: {{contentType}}
 Authorization: Bearer {{accessToken}}
 
 {
-  "userId": "456e7890-e89b-12d3-a456-426614174001",
+  "nfcTagId": "456e7890-e89b-12d3-a456-426614174001",
   "serialNumber": "NFC987654321",
   "contactInfo": [
     {
@@ -245,3 +256,8 @@ Authorization: Bearer {{accessToken}}
 # - "father": Padre  
 # - "mother": Madre
 # - "other": Otro
+#
+# NFC Tag ID:
+# - Debe ser un UUID v4 válido
+# - Para crear: genera un nuevo UUID v4
+# - Para actualizar: usa el UUID del NFC existente

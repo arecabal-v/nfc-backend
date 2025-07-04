@@ -9,9 +9,10 @@ export default class PostNfcDataController implements BaseController {
 
   async run(req: Request, res: Response, _next: NextFunction): Promise<void> {
     const { userId } = req.tokenPayload!;
-    const { serialNumber, contactInfo } = req.body;
+    const { nfcTagId, serialNumber, contactInfo } = req.body;
 
     const command = new NfcDataCreatorCommand(
+        nfcTagId,
         userId,
         serialNumber,
         contactInfo,
@@ -19,8 +20,8 @@ export default class PostNfcDataController implements BaseController {
 
     await this.commandBus.dispatch(command);
 
-    res.status(httpStatus.CREATED).json({
-      message: 'NFC data programmed successfully',
+    res.status(httpStatus.OK).json({
+      message: 'NFC data saved successfully',
     });
   }
 }

@@ -5,7 +5,7 @@ import { NfcTagId } from '@contexts/nfc/domain/NfcTagId';
 export class NfcDataGetter {
   constructor(private readonly nfcRepository: NfcRepository) {}
 
-  async execute(id: NfcTagId): Promise<NfcTag | null> {
+  async run(id: NfcTagId): Promise<NfcTag | null> {
     return this.nfcRepository.search(id);
   }
 }

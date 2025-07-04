@@ -15,46 +15,47 @@ services:
     class: "@app/controllers/nfc/GetPublicNfcTagController"
     arguments: ["@Shared.Domain.QueryBus"]
 
-  Apps.nfc.NfcRepository:
-    class: "@contexts/nfc/infrastructure/persistence/mongodb/NfcMongoRepository"
-    arguments: ["@Shared.Mongo.Connection.Manager.NFC"]
-
-  Apps.nfc.NfcDataCreator:
+  Apps.nfc.cases.NfcDataCreator:
     class: "@contexts/nfc/application/cases/NfcDataCreator"
-    arguments: ["@Apps.nfc.NfcRepository"]
+    arguments: ["@Apps.nfc.NfcMongoRepository"]
 
-  Apps.nfc.NfcDataGetter:
+  Apps.nfc.cases.NfcDataGetter:
     class: "@contexts/nfc/application/cases/NfcDataGetter"
-    arguments: ["@Apps.nfc.NfcRepository"]
+    arguments: ["@Apps.nfc.NfcMongoRepository"]
 
-  Apps.nfc.NfcTagsByUserGetter:
+  Apps.nfc.cases.NfcTagsByUserGetter:
     class: "@contexts/nfc/application/cases/NfcTagsByUserGetter"
-    arguments: ["@Apps.nfc.NfcRepository"]
+    arguments: ["@Apps.nfc.NfcMongoRepository"]
 
-  Apps.nfc.PublicNfcTagGetter:
+  Apps.nfc.cases.PublicNfcTagGetter:
     class: "@contexts/nfc/application/cases/PublicNfcTagGetter"
-    arguments: ["@Apps.nfc.NfcRepository"]
+    arguments: ["@Apps.nfc.NfcMongoRepository"]
 
-  Apps.nfc.NfcDataCreatorCommandHandler:
+  Apps.nfc.commands.NfcDataCreatorCommandHandler:
     class: "@contexts/nfc/application/commands/NfcDataCreatorCommandHandler"
-    arguments: ["@Apps.nfc.NfcDataCreator"]
+    arguments:
+      ["@Apps.nfc.cases.NfcDataCreator", "@Apps.nfc.cases.NfcDataGetter"]
     tags:
       - { name: "commandHandler" }
 
-  Apps.nfc.GetNfcTagByIdQueryHandler:
+  Apps.nfc.queries.GetNfcTagByIdQueryHandler:
     class: "@contexts/nfc/application/queries/GetNfcTagByIdQueryHandler"
-    arguments: ["@Apps.nfc.NfcDataGetter"]
+    arguments: ["@Apps.nfc.cases.NfcDataGetter"]
     tags:
       - { name: "queryHandler" }
 
-  Apps.nfc.GetNfcTagsByUserIdQueryHandler:
+  Apps.nfc.queries.GetNfcTagsByUserIdQueryHandler:
     class: "@contexts/nfc/application/queries/GetNfcTagsByUserIdQueryHandler"
-    arguments: ["@Apps.nfc.NfcTagsByUserGetter"]
+    arguments: ["@Apps.nfc.cases.NfcTagsByUserGetter"]
     tags:
       - { name: "queryHandler" }
 
-  Apps.nfc.GetPublicNfcTagBySerialNumberQueryHandler:
+  Apps.nfc.queries.GetPublicNfcTagBySerialNumberQueryHandler:
     class: "@contexts/nfc/application/queries/GetPublicNfcTagBySerialNumberQueryHandler"
-    arguments: ["@Apps.nfc.PublicNfcTagGetter"]
+    arguments: ["@Apps.nfc.cases.PublicNfcTagGetter"]
     tags:
       - { name: "queryHandler" }
+
+  Apps.nfc.NfcMongoRepository:
+    class: "@contexts/nfc/infrastructure/persistence/mongodb/NfcMongoRepository"
+    arguments: ["@Shared.Mongo.Connection.Manager.NFC"]

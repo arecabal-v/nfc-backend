@@ -14,7 +14,7 @@ export class GetNfcTagByIdQueryHandler implements QueryHandler<GetNfcTagByIdQuer
 
   async handle(query: GetNfcTagByIdQuery): Promise<NfcTag> {
     const nfcTagId = new NfcTagId(query.id);
-    const nfcTag = await this.nfcDataGetter.execute(nfcTagId);
+    const nfcTag = await this.nfcDataGetter.run(nfcTagId);
 
     if (!nfcTag) throw new Error('Nfc tag not found');
     return nfcTag;
