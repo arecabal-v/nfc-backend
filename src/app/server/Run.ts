@@ -1,11 +1,16 @@
 import { Server } from './Server';
-import config from '../config'; ;
+import config from '../config';
+import container from '../dependency-injection';
+import Logger from '../../contexts/shared/domain/Logger';
 
 export class Run {
   server?: Server;
+  private logger: Logger = container.get('Shared.Logger');
 
   async start() {
-    this.server = new Server(Number(config.PORT));
+    const port = Number(config.PORT);
+    this.logger.info(`Starting server on port: ${port} (from env PORT: ${process.env.PORT})`);
+    this.server = new Server(port);
 
     return this.server.listen();
   }

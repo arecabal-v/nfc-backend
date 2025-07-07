@@ -4,7 +4,7 @@ const env = (key: string) => {
 };
 
 export default {
-  PORT: env('PORT') ?? 3000,
+  PORT: parseInt(env('PORT') || '3000'),
   ENVIRONMENT: env('ENVIRONMENT') ?? 'DEVELOP',
   LOGGER_LEVELS: {
     DEBUG: 'debug',

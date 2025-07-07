@@ -77,11 +77,12 @@ jobs:
           service: ${{ env.SERVICE }}
           region: ${{ env.REGION }}
           image: ${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.SERVICE }}/${{ env.SERVICE }}:${{ github.sha }}
+          timeout: 600
+          flags: "--allow-unauthenticated --port=8080 --memory=512Mi --cpu=1"
           env_vars: |
             NODE_ENV=production
-            MONGODB_URI=${{ secrets.MONGODB_URI }}
+            MONGO_URL=${{ secrets.MONGO_URL }}
             JWT_SECRET=${{ secrets.JWT_SECRET }}
-            PORT=3000
 
       - name: Show Output
         run: echo ${{ steps.deploy.outputs.url }}

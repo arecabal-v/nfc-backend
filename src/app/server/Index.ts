@@ -1,5 +1,5 @@
-import container from '@app/dependency-injection';
-import Logger from '@contexts/shared/domain/Logger';
+import container from '../dependency-injection';
+import Logger from '../../contexts/shared/domain/Logger';
 import { Run } from './Run';
 
 const logger: Logger = container.get('Shared.Logger');
